@@ -1,59 +1,59 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-// Dictionary for spell-checking and auto-correction
-const customDictionary = {
-  teh: "the",
-
-  wrok: "work",
-
-  fot: "for",
-
-  exampl: "example",
-};
+const dictionaryData = [
+  {
+    word: "React",
+    meaning: "A JavaScript library for building user interfaces.",
+  },
+  { word: "Component", meaning: "A reusable building block in React." },
+  { word: "State", meaning: "An object that stores data for a component." },
+];
 
 const App = () => {
-  const [text, setText] = useState("");
-  const [correction, setCorrection] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResult, setSearchResult] = useState("");
 
-  useEffect(() => {
-    // Function to check for misspellings and suggest corrections
-    const spellCheck = (inputText) => {
-      const words = inputText.split(/\s+/); // Split text into words
-      for (const word of words) {
-        const correctedWord = customDictionary[word.toLowerCase()];
-        if (
-          correctedWord &&
-          word.toLowerCase() !== correctedWord.toLowerCase()
-        ) {
-          return correctedWord; // Return first correction found
-        }
-      }
-      return ""; // Return empty string if no correction found
-    };
+  const handleSearch = () => {
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    const foundWord = dictionaryData.find(
+      (entry) => entry.word.toLowerCase() === lowerCaseSearchTerm,
+    );
 
-    // Perform spell check and set correction state
-    setCorrection(spellCheck(text));
-  }, [text]);
-
-  const handleInputChange = (event) => {
-    setText(event.target.value);
+    if (foundWord) {
+      setSearchResult(
+        <div>
+          {/* <p>
+            <strong>Definition:</strong>
+          </p> */}
+          <p>{foundWord.meaning}</p>
+        </div>,
+      );
+    } else {
+      setSearchResult(
+        <div>
+          {/* <p>
+            <strong>Definition:</strong>
+          </p> */}
+          <p>Word not found in the dictionary.</p>
+        </div>,
+      );
+    }
   };
 
   return (
-    <div>
-      <h1>Spell Check and Auto-Correction</h1>
-      <textarea
-        value={text}
-        onChange={handleInputChange}
-        placeholder="Enter text..."
-        rows={4}
-        cols={50}
-      />
-      {correction && (
-        <div>
-          <strong>Did you mean:</strong> {correction}?
-        </div>
-      )}
+    <div className="App">
+      <h1>Dictionary App</h1>
+      <div>
+        <input
+          type="text"
+          placeholder="Search for a word..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <button onClick={handleSearch}>Search</button>
+      </div>
+      <h2>Definition:</h2>
+      <div>{searchResult && <div>{searchResult}</div>}</div>
     </div>
   );
 };
